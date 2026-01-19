@@ -1,17 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { ICONS } from './constants';
 import Dashboard from './pages/Dashboard';
 import BuilderPage from './pages/BuilderPage';
-import { Course, Module, Lesson } from './types';
+import CourseView from './pages/CourseView';
+import { Course, Module } from './types';
 
 const INITIAL_COURSES: Course[] = [
   {
     id: '1',
     title: 'Minimalist UX Foundations',
     subtitle: 'Learn the art of subtraction in digital interface design.',
-    thumbnail: 'https://picsum.photos/seed/design/1000/700',
+    thumbnail: 'https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?auto=format&fit=crop&q=80&w=1000',
     status: 'published',
     modules: [
       {
@@ -42,12 +43,12 @@ const Sidebar = () => {
       <nav className="flex flex-col gap-3 flex-1">
         <Link to="/" className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-primary transition-all font-bold">
           <ICONS.Home />
-          <span className="hidden lg:block text-slate-600">Studios</span>
+          <span className="hidden lg:block text-slate-600">Mes Studios</span>
         </Link>
-        <Link to="/settings" className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-primary transition-all font-bold">
+        <div className="opacity-40 pointer-events-none flex items-center gap-4 p-4 rounded-2xl text-slate-400 font-bold">
           <ICONS.Settings />
-          <span className="hidden lg:block text-slate-600">Workspace</span>
-        </Link>
+          <span className="hidden lg:block text-slate-600">Bibliothèque</span>
+        </div>
       </nav>
 
       <div className="pt-8 border-t border-black/5">
@@ -57,7 +58,7 @@ const Sidebar = () => {
           <div className="w-full bg-white/10 h-1.5 rounded-full mb-3">
              <div className="bg-primary w-[70%] h-full rounded-full" />
           </div>
-          <p className="text-xs font-bold text-slate-300">7.2 GB of 10 GB used</p>
+          <p className="text-xs font-bold text-slate-300">7.2 GB sur 10 GB</p>
         </div>
       </div>
     </aside>
@@ -93,8 +94,8 @@ const AppContent = () => {
     const newCourse: Course = {
       id: Date.now().toString(),
       title: aiOutline?.title || title,
-      subtitle: aiOutline?.subtitle || 'No description provided.',
-      thumbnail: `https://picsum.photos/seed/${Date.now()}/1000/700`,
+      subtitle: aiOutline?.subtitle || 'Nouvelle formation en préparation.',
+      thumbnail: `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1000&seed=${Date.now()}`,
       status: 'draft',
       modules
     };
@@ -112,14 +113,21 @@ const AppContent = () => {
 
   return (
     <div className="flex bg-[#fbfbfe]">
-      <Sidebar />
-      <main className="flex-1 min-h-screen">
-        <Routes>
-          <Route path="/" element={<Dashboard courses={courses} onAddCourse={addCourse} onDeleteCourse={deleteCourse} />} />
-          <Route path="/builder/:courseId" element={<BuilderPage courses={courses} onUpdateCourse={updateCourse} />} />
-          <Route path="/settings" element={<div className="p-20"><h1 className="text-5xl font-black tracking-tight">Workspace Settings</h1></div>} />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/view/:courseId" element={<CourseView courses={courses} />} />
+        <Route path="*" element={
+          <>
+            <Sidebar />
+            <main className="flex-1 min-h-screen">
+              <Routes>
+                <Route path="/" element={<Dashboard courses={courses} onAddCourse={addCourse} onDeleteCourse={deleteCourse} />} />
+                <Route path="/builder/:courseId" element={<BuilderPage courses={courses} onUpdateCourse={updateCourse} />} />
+                <Route path="/settings" element={<div className="p-20"><h1 className="text-5xl font-black tracking-tight">Paramètres</h1></div>} />
+              </Routes>
+            </main>
+          </>
+        } />
+      </Routes>
     </div>
   );
 };
