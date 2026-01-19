@@ -1,0 +1,8 @@
+{
+  "name": "SousChef Course Studio",
+  "description": "A premium, soft-design online course creation platform with AI-powered content generation and elegant video embedding.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
